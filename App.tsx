@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, ChangeEvent } from 'react';
 import { generateAllImages, regenerateImage } from './services/apiClient';
 import { addWatermark, downloadImage } from './utils/fileUtils';
+import { extractProductInfo } from './utils/textProcessor';
 import type { GeneratedImage } from './types';
 import { FILE_UPLOAD, ERROR_MESSAGES } from './constants';
 
@@ -18,6 +19,17 @@ const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isRegenerating, setIsRegenerating] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    // テキスト入力時にAmazonページなどから商品情報を抽出
+    const handlePromptTextChange = useCallback((text: string) => {
+        // 大量のテキスト（500文字以上）の場合、商品情報を抽出
+        if (text.length > 500) {
+            const extractedInfo = extractProductInfo(text);
+            setPromptText(extractedInfo);
+        } else {
+            setPromptText(text);
+        }
+    }, []);
 
     // Cleanup object URL to prevent memory leak
     useEffect(() => {
@@ -180,7 +192,7 @@ const App: React.FC = () => {
 
                 <InputForm
                     promptText={promptText}
-                    onPromptTextChange={setPromptText}
+                    onPromptTextChange={handlePromptTextChange}
                     onImageFileChange={handleImageInputChange}
                     baseImagePreview={baseImagePreview}
                     onSubmit={runGeneration}

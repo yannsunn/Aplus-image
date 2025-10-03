@@ -38,17 +38,23 @@ const InputForm: React.FC<InputFormProps> = ({
             </div>
 
             {/* Image Upload Section */}
-            <div>
-                <label htmlFor="image-input" className="block text-sm font-semibold text-gray-700 mb-3">
-                    🖼️ Base Product Image
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-2xl border-2 border-indigo-200">
+                <label htmlFor="image-input" className="block text-base font-bold text-indigo-900 mb-4 flex items-center gap-2">
+                    <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>📸 Product Image (Required)</span>
                 </label>
+                <p className="text-sm text-gray-600 mb-4">
+                    Upload a product image to generate AI-enhanced A+ content images
+                </p>
                 <div className="relative">
                     <input
                         type="file"
                         id="image-input"
                         accept="image/*"
                         onChange={onImageFileChange}
-                        className="w-full text-sm text-gray-600 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-indigo-500 file:to-purple-600 file:text-white hover:file:from-indigo-600 hover:file:to-purple-700 file:transition-all file:duration-200 file:cursor-pointer file:shadow-lg cursor-pointer border-2 border-dashed border-gray-300 rounded-2xl p-4 hover:border-indigo-400 transition-all bg-white/50 backdrop-blur-sm"
+                        className="w-full text-sm text-gray-700 file:mr-4 file:py-4 file:px-8 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-gradient-to-r file:from-indigo-600 file:to-purple-600 file:text-white hover:file:from-indigo-700 hover:file:to-purple-700 file:transition-all file:duration-200 file:cursor-pointer file:shadow-xl cursor-pointer border-2 border-dashed border-indigo-300 rounded-2xl p-6 hover:border-indigo-500 hover:bg-white/60 transition-all bg-white/40 backdrop-blur-sm"
                     />
                 </div>
             </div>
