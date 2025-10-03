@@ -2,8 +2,14 @@ import { Type, Modality } from '@google/genai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createGeminiClient, logError, MODELS } from './utils';
 
-// Initialize Gemini client with validated API key
-const ai = createGeminiClient();
+// Lazy initialization of Gemini client
+let ai: ReturnType<typeof createGeminiClient> | null = null;
+function getAI() {
+    if (!ai) {
+        ai = createGeminiClient();
+    }
+    return ai;
+}
 
 async function getPromptsFromText(text: string): Promise<{ id: number; title: string; prompt: string; }[]> {
     const model = MODELS.TEXT;
@@ -20,7 +26,7 @@ async function getPromptsFromText(text: string): Promise<{ id: number; title: st
     `;
 
     try {
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model,
             contents: text,
             config: {
@@ -62,7 +68,7 @@ async function getPromptsFromText(text: string): Promise<{ id: number; title: st
 async function generateSingleImage(prompt: string, base64ImageData: string, mimeType: string): Promise<string> {
     const model = MODELS.IMAGE;
     try {
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model,
             contents: {
                 parts: [

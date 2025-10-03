@@ -2,8 +2,14 @@ import { Modality } from '@google/genai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createGeminiClient, logError, MODELS } from './utils';
 
-// Initialize Gemini client with validated API key
-const ai = createGeminiClient();
+// Lazy initialization of Gemini client
+let ai: ReturnType<typeof createGeminiClient> | null = null;
+function getAI() {
+    if (!ai) {
+        ai = createGeminiClient();
+    }
+    return ai;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') {
@@ -17,7 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(400).json({ message: 'prompt, base64ImageData, mimeTypeが必要です。'});
         }
 
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: MODELS.IMAGE,
             contents: {
                 parts: [
