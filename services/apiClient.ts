@@ -1,5 +1,17 @@
 import { fileToBase64 } from '../utils/fileUtils';
 import type { GeneratedImage } from '../types';
+import { API } from '../constants';
+
+/**
+ * Creates an AbortController with timeout
+ * @param timeoutMs Timeout in milliseconds
+ * @returns AbortController instance
+ */
+const createAbortControllerWithTimeout = (timeoutMs: number): AbortController => {
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), timeoutMs);
+    return controller;
+};
 
 /**
  * Calls the backend API to generate all four A+ content images.
@@ -9,27 +21,36 @@ import type { GeneratedImage } from '../types';
  */
 export const generateAllImages = async (productDescription: string, baseImageFile: File): Promise<GeneratedImage[]> => {
     const base64ImageData = await fileToBase64(baseImageFile);
-    
-    // This fetch call is intended for a backend endpoint (e.g., a Vercel Function)
-    // at the path `/api/generateAll`. This will not work in the current environment
-    // but is structured for a real-world deployment.
-    const response = await fetch('/api/generateAll', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            productDescription,
-            base64ImageData,
-            mimeType: baseImageFile.type,
-        }),
-    });
+    const controller = createAbortControllerWithTimeout(API.TIMEOUT_MS);
 
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred on the server.' }));
-        throw new Error(errorData.message || 'Failed to generate images.');
+    try {
+        // This fetch call is intended for a backend endpoint (e.g., a Vercel Function)
+        // at the path `/api/generateAll`. This will not work in the current environment
+        // but is structured for a real-world deployment.
+        const response = await fetch('/api/generateAll', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                productDescription,
+                base64ImageData,
+                mimeType: baseImageFile.type,
+            }),
+            signal: controller.signal,
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred on the server.' }));
+            throw new Error(errorData.message || 'Failed to generate images.');
+        }
+
+        const data = await response.json();
+        return data.images; // Expects the backend to return { images: GeneratedImage[] }
+    } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+            throw new Error(`リクエストがタイムアウトしました（${API.TIMEOUT_MS / 1000}秒）`);
+        }
+        throw error;
     }
-
-    const data = await response.json();
-    return data.images; // Expects the backend to return { images: GeneratedImage[] }
 };
 
 /**
@@ -40,23 +61,32 @@ export const generateAllImages = async (productDescription: string, baseImageFil
  */
 export const regenerateImage = async (prompt: string, baseImageFile: File): Promise<string> => {
     const base64ImageData = await fileToBase64(baseImageFile);
+    const controller = createAbortControllerWithTimeout(API.TIMEOUT_MS);
 
-    // This fetch call targets a backend endpoint at `/api/regenerateSingle`.
-    const response = await fetch('/api/regenerateSingle', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            prompt,
-            base64ImageData,
-            mimeType: baseImageFile.type,
-        }),
-    });
+    try {
+        // This fetch call targets a backend endpoint at `/api/regenerateSingle`.
+        const response = await fetch('/api/regenerateSingle', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                prompt,
+                base64ImageData,
+                mimeType: baseImageFile.type,
+            }),
+            signal: controller.signal,
+        });
 
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred on the server.' }));
-        throw new Error(errorData.message || 'Failed to regenerate the image.');
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred on the server.' }));
+            throw new Error(errorData.message || 'Failed to regenerate the image.');
+        }
+
+        const data = await response.json();
+        return data.imageBase64; // Expects the backend to return { imageBase64: string }
+    } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+            throw new Error(`リクエストがタイムアウトしました（${API.TIMEOUT_MS / 1000}秒）`);
+        }
+        throw error;
     }
-    
-    const data = await response.json();
-    return data.imageBase64; // Expects the backend to return { imageBase64: string }
 };

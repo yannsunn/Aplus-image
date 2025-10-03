@@ -1,10 +1,22 @@
 import { GoogleGenAI, Type, Modality } from '@google/genai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Validate API key on module load
+const apiKey = process.env.GEMINI_API_KEY;
+if (!apiKey) {
+    throw new Error('GEMINI_API_KEY environment variable is required');
+}
+
+const ai = new GoogleGenAI({ apiKey });
+
+// Model constants
+const MODELS = {
+    TEXT: 'gemini-2.5-flash',
+    IMAGE: 'gemini-2.5-flash-image',
+} as const;
 
 async function getPromptsFromText(text: string): Promise<{ id: number; title: string; prompt: string; }[]> {
-    const model = 'gemini-2.5-flash';
+    const model = MODELS.TEXT;
     const systemInstruction = `
         あなたはSEOとコピーライティングの専門家です。与えられたA+コンテンツの文章を分析し、画像生成プロンプトを作成するためのキーワードを抽出してください。
         製品の主題は「住居用クリーナーシート（ワイプ）」です。
@@ -36,6 +48,9 @@ async function getPromptsFromText(text: string): Promise<{ id: number; title: st
             }
         });
 
+        if (!response.text) {
+            throw new Error('APIレスポンスが空です。');
+        }
         const keywords = JSON.parse(response.text);
 
         const baseInstruction = "生成する画像は、**住居用クリーナーシート（ワイプ）**を主題とし、その使用シーンをレンダリングすること。入力画像を参照し、製品のパッケージや色を維持すること。";
@@ -54,7 +69,7 @@ async function getPromptsFromText(text: string): Promise<{ id: number; title: st
 }
 
 async function generateSingleImage(prompt: string, base64ImageData: string, mimeType: string): Promise<string> {
-    const model = 'gemini-2.5-flash-image';
+    const model = MODELS.IMAGE;
     try {
         const response = await ai.models.generateContent({
             model,
@@ -69,8 +84,13 @@ async function generateSingleImage(prompt: string, base64ImageData: string, mime
             },
         });
         
-        const imagePart = response.candidates?.[0]?.content?.parts.find(p => p.inlineData);
-        if (!imagePart || !imagePart.inlineData) {
+        const candidate = response.candidates?.[0];
+        if (!candidate?.content?.parts) {
+            throw new Error('APIレスポンスに画像データが見つかりませんでした。');
+        }
+
+        const imagePart = candidate.content.parts.find(p => p.inlineData);
+        if (!imagePart?.inlineData?.data) {
             throw new Error('APIレスポンスに画像データが見つかりませんでした。');
         }
         return imagePart.inlineData.data;

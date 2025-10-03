@@ -5,9 +5,18 @@ interface ErrorDisplayProps {
 }
 
 const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ message }) => (
-    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative my-4" role="alert">
-        <strong className="font-bold">エラー: </strong>
-        <span className="block sm:inline">{message}</span>
+    <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-5 my-6 shadow-sm" role="alert">
+        <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+                <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div className="flex-1">
+                <h3 className="text-sm font-semibold text-red-800 mb-1">Error</h3>
+                <p className="text-sm text-red-700">{message}</p>
+            </div>
+        </div>
     </div>
 );
 

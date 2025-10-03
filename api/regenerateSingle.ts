@@ -1,8 +1,20 @@
 import { GoogleGenAI, Modality } from '@google/genai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-const model = 'gemini-2.5-flash-image';
+// Validate API key on module load
+const apiKey = process.env.GEMINI_API_KEY;
+if (!apiKey) {
+    throw new Error('GEMINI_API_KEY environment variable is required');
+}
+
+const ai = new GoogleGenAI({ apiKey });
+
+// Model constants
+const MODELS = {
+    IMAGE: 'gemini-2.5-flash-image',
+} as const;
+
+const model = MODELS.IMAGE;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') {
@@ -29,8 +41,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             },
         });
 
-        const imagePart = response.candidates?.[0]?.content?.parts.find(p => p.inlineData);
-        if (!imagePart || !imagePart.inlineData) {
+        const candidate = response.candidates?.[0];
+        if (!candidate?.content?.parts) {
+            throw new Error('APIレスポンスに画像データが見つかりませんでした。');
+        }
+
+        const imagePart = candidate.content.parts.find(p => p.inlineData);
+        if (!imagePart?.inlineData?.data) {
             throw new Error('APIレスポンスに画像データが見つかりませんでした。');
         }
 
