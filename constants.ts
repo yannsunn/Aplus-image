@@ -29,9 +29,9 @@ export const API = {
 // Watermark Configuration
 export const WATERMARK = {
   TEXT: 'Awake Inc.',
-  FONT: '24px "Inter", sans-serif',
-  FILL_STYLE: 'rgba(255, 255, 255, 0.7)',
-  PADDING: 10,
+  FONT: '36px "Inter", sans-serif',
+  FILL_STYLE: 'rgba(255, 255, 255, 0.8)',
+  PADDING: 15,
 } as const;
 
 // Download Configuration

@@ -49,7 +49,7 @@ async function getPromptsFromText(text) {
         }
         const keywords = JSON.parse(response.text);
 
-        const baseInstruction = "入力画像を参照し、製品のデザイン、パッケージ、色を維持すること。商品の魅力を最大限に引き出すプロフェッショナルな商品写真を生成。";
+        const baseInstruction = "入力画像を参照し、製品のデザイン、パッケージ、色を維持すること。商品の魅力を最大限に引き出すプロフェッショナルな商品写真を生成。画像内にティッシュや小道具などが写っている場合は無視し、商品のみに焦点を当てること。";
         const commonStyle = "文字なし。高品質なコマーシャルフォト。適切なターゲット層に合わせた雰囲気。";
 
         return [
