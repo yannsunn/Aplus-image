@@ -49,8 +49,8 @@ const App: React.FC = () => {
             return;
         }
 
-        // Validate file type
-        if (!FILE_UPLOAD.ALLOWED_TYPES.includes(file.type as typeof FILE_UPLOAD.ALLOWED_TYPES[number])) {
+        // Validate file type - check if file type starts with 'image/'
+        if (!file.type.startsWith('image/')) {
             setError(ERROR_MESSAGES.INVALID_FILE_TYPE);
             e.target.value = ''; // Reset input
             return;
