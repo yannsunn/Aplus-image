@@ -1,9 +1,8 @@
-import { Type, Modality } from '@google/genai';
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createGeminiClient, logError, MODELS } from './utils';
+const { Type, Modality } = require('@google/genai');
+const { createGeminiClient, logError, MODELS } = require('./utils');
 
 // Lazy initialization of Gemini client
-let ai: ReturnType<typeof createGeminiClient> | null = null;
+let ai = null;
 function getAI() {
     if (!ai) {
         ai = createGeminiClient();
@@ -11,7 +10,7 @@ function getAI() {
     return ai;
 }
 
-async function getPromptsFromText(text: string): Promise<{ id: number; title: string; prompt: string; }[]> {
+async function getPromptsFromText(text) {
     const model = MODELS.TEXT;
     const systemInstruction = `
         あなたはSEOとコピーライティングの専門家です。与えられた商品説明文を分析し、Amazon A+コンテンツ用の画像生成プロンプトを作成するためのキーワードを抽出してください。
@@ -65,7 +64,7 @@ async function getPromptsFromText(text: string): Promise<{ id: number; title: st
     }
 }
 
-async function generateSingleImage(prompt: string, base64ImageData: string, mimeType: string): Promise<string> {
+async function generateSingleImage(prompt, base64ImageData, mimeType) {
     const model = MODELS.IMAGE;
     try {
         const response = await getAI().models.generateContent({
@@ -80,7 +79,7 @@ async function generateSingleImage(prompt: string, base64ImageData: string, mime
                 responseModalities: [Modality.IMAGE, Modality.TEXT],
             },
         });
-        
+
         const candidate = response.candidates?.[0];
         if (!candidate?.content?.parts) {
             throw new Error('APIレスポンスに画像データが見つかりませんでした。');
@@ -98,7 +97,7 @@ async function generateSingleImage(prompt: string, base64ImageData: string, mime
     }
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'POSTリクエストのみ許可されています。' });
     }
@@ -108,7 +107,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const prompts = await getPromptsFromText(productDescription);
 
-        const imageGenerationPromises = prompts.map(p => 
+        const imageGenerationPromises = prompts.map(p =>
             generateSingleImage(p.prompt, base64ImageData, mimeType)
         );
         const generatedImageB64s = await Promise.all(imageGenerationPromises);
@@ -127,4 +126,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         logError('generateAll.handler', error);
         return res.status(500).json({ message: errorMessage });
     }
-}
+};

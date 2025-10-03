@@ -1,9 +1,8 @@
-import { Modality } from '@google/genai';
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createGeminiClient, logError, MODELS } from './utils';
+const { Modality } = require('@google/genai');
+const { createGeminiClient, logError, MODELS } = require('./utils');
 
 // Lazy initialization of Gemini client
-let ai: ReturnType<typeof createGeminiClient> | null = null;
+let ai = null;
 function getAI() {
     if (!ai) {
         ai = createGeminiClient();
@@ -11,7 +10,7 @@ function getAI() {
     return ai;
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'POSTリクエストのみ許可されています。' });
     }
@@ -53,4 +52,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         logError('regenerateSingle.handler', error);
         return res.status(500).json({ message: errorMessage });
     }
-}
+};

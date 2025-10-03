@@ -1,6 +1,4 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-
-export default async function handler(_req: VercelRequest, res: VercelResponse) {
+module.exports = async function handler(_req, res) {
     try {
         // Test environment variables
         const apiKey = process.env.GEMINI_API_KEY;
@@ -22,4 +20,4 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
             stack: errorStack
         });
     }
-}
+};

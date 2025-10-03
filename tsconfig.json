@@ -35,5 +35,8 @@
     "noUnusedParameters": true,
     "exactOptionalPropertyTypes": true,
     "noImplicitOverride": true
-  }
+  },
+  "exclude": [
+    "api"
+  ]
 }

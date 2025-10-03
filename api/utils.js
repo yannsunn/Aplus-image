@@ -1,19 +1,19 @@
-import { GoogleGenAI } from '@google/genai';
+const { GoogleGenAI } = require('@google/genai');
 
 /**
  * Gemini AI model names
  */
-export const MODELS = {
+const MODELS = {
     TEXT: 'gemini-2.5-flash',
     IMAGE: 'gemini-2.5-flash-image-preview',
-} as const;
+};
 
 /**
  * Validates and retrieves the Gemini API key from environment variables
  * @throws Error if API key is missing
  * @returns Validated API key
  */
-export function getValidatedApiKey(): string {
+function getValidatedApiKey() {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
         throw new Error('GEMINI_API_KEY environment variable is required');
@@ -25,18 +25,18 @@ export function getValidatedApiKey(): string {
  * Creates a configured GoogleGenAI instance
  * @returns GoogleGenAI instance with validated API key
  */
-export function createGeminiClient(): GoogleGenAI {
+function createGeminiClient() {
     const apiKey = getValidatedApiKey();
     return new GoogleGenAI({ apiKey });
 }
 
 /**
  * Structured error logger for API endpoints
- * @param context The context/function where error occurred
- * @param error The error object
- * @param metadata Additional metadata to log
+ * @param {string} context - The context/function where error occurred
+ * @param {unknown} error - The error object
+ * @param {Record<string, unknown>} metadata - Additional metadata to log
  */
-export function logError(context: string, error: unknown, metadata?: Record<string, unknown>): void {
+function logError(context, error, metadata = {}) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     const errorStack = error instanceof Error ? error.stack : undefined;
 
@@ -48,3 +48,10 @@ export function logError(context: string, error: unknown, metadata?: Record<stri
         ...metadata
     }));
 }
+
+module.exports = {
+    MODELS,
+    getValidatedApiKey,
+    createGeminiClient,
+    logError
+};
