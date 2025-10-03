@@ -12,7 +12,7 @@ const ai = new GoogleGenAI({ apiKey });
 // Model constants
 const MODELS = {
     TEXT: 'gemini-2.5-flash',
-    IMAGE: 'gemini-2.5-flash-image',
+    IMAGE: 'gemini-2.5-flash-image-preview',
 } as const;
 
 async function getPromptsFromText(text: string): Promise<{ id: number; title: string; prompt: string; }[]> {

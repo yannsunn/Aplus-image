@@ -5,7 +5,7 @@
 // Gemini AI Models
 export const MODELS = {
   TEXT: 'gemini-2.5-flash',
-  IMAGE: 'gemini-2.5-flash-image',
+  IMAGE: 'gemini-2.5-flash-image-preview',
 } as const;
 
 // File Upload Validation

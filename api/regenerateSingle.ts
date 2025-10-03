@@ -11,7 +11,7 @@ const ai = new GoogleGenAI({ apiKey });
 
 // Model constants
 const MODELS = {
-    IMAGE: 'gemini-2.5-flash-image',
+    IMAGE: 'gemini-2.5-flash-image-preview',
 } as const;
 
 const model = MODELS.IMAGE;
