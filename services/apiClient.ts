@@ -14,6 +14,18 @@ const createAbortControllerWithTimeout = (timeoutMs: number): AbortController =>
 };
 
 /**
+ * Handles API request errors, converting AbortError to timeout message
+ * @param error The error to handle
+ * @throws Formatted error message
+ */
+const handleApiError = (error: unknown): void => {
+    if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error(`リクエストがタイムアウトしました（${API.TIMEOUT_MS / 1000}秒）`);
+    }
+    throw error;
+};
+
+/**
  * Calls the backend API to generate all four A+ content images.
  * @param productDescription The user-provided text.
  * @param baseImageFile The user-uploaded image file.
@@ -46,10 +58,7 @@ export const generateAllImages = async (productDescription: string, baseImageFil
         const data = await response.json();
         return data.images; // Expects the backend to return { images: GeneratedImage[] }
     } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') {
-            throw new Error(`リクエストがタイムアウトしました（${API.TIMEOUT_MS / 1000}秒）`);
-        }
-        throw error;
+        return handleApiError(error) as never;
     }
 };
 
@@ -84,9 +93,6 @@ export const regenerateImage = async (prompt: string, baseImageFile: File): Prom
         const data = await response.json();
         return data.imageBase64; // Expects the backend to return { imageBase64: string }
     } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') {
-            throw new Error(`リクエストがタイムアウトしました（${API.TIMEOUT_MS / 1000}秒）`);
-        }
-        throw error;
+        return handleApiError(error) as never;
     }
 };

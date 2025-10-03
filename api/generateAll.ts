@@ -1,5 +1,6 @@
 import { GoogleGenAI, Type, Modality } from '@google/genai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { MODELS } from '../constants';
 
 // Validate API key on module load
 const apiKey = process.env.GEMINI_API_KEY;
@@ -8,12 +9,6 @@ if (!apiKey) {
 }
 
 const ai = new GoogleGenAI({ apiKey });
-
-// Model constants
-const MODELS = {
-    TEXT: 'gemini-2.5-flash',
-    IMAGE: 'gemini-2.5-flash-image-preview',
-} as const;
 
 async function getPromptsFromText(text: string): Promise<{ id: number; title: string; prompt: string; }[]> {
     const model = MODELS.TEXT;

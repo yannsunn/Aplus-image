@@ -1,5 +1,6 @@
 import { GoogleGenAI, Modality } from '@google/genai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { MODELS } from '../constants';
 
 // Validate API key on module load
 const apiKey = process.env.GEMINI_API_KEY;
@@ -8,13 +9,6 @@ if (!apiKey) {
 }
 
 const ai = new GoogleGenAI({ apiKey });
-
-// Model constants
-const MODELS = {
-    IMAGE: 'gemini-2.5-flash-image-preview',
-} as const;
-
-const model = MODELS.IMAGE;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') {
@@ -29,7 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         const response = await ai.models.generateContent({
-            model,
+            model: MODELS.IMAGE,
             contents: {
                 parts: [
                     { text: prompt },

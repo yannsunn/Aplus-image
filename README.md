@@ -6,12 +6,12 @@
 
 Google Gemini APIを使用した、A+コンテンツ用の画像を自動生成するWebアプリケーションです。
 
-View your app in AI Studio: https://ai.studio/apps/drive/17UzKs7sEC_WWM5z3R_K_aIoO41fx02Es
-
 ## Features
 
 - 📝 テキストから画像生成プロンプトを自動抽出
+- 🧹 **Amazonページからの商品情報自動抽出** - 500文字以上のテキストから商品詳細のみを抽出
 - 🎨 ヘッダーと3つの特徴画像（計4枚）を一括生成
+- 🖼️ **製品画像ベースの生成** - アップロードした商品画像を参照してAI画像を生成
 - 🔄 個別の画像を再生成可能
 - 💧 自動ウォーターマーク追加
 - 📥 一括ダウンロード機能
@@ -82,7 +82,10 @@ npm run preview
 │   ├── generateAll.ts     # Generate all 4 images
 │   └── regenerateSingle.ts # Regenerate single image
 ├── services/              # API client services
+│   └── apiClient.ts       # Frontend API client
 ├── utils/                 # Utility functions
+│   ├── fileUtils.ts       # File conversion & watermark
+│   └── textProcessor.ts   # Amazon text extraction
 ├── constants.ts           # Application constants
 └── *.tsx                  # React components
 ```
