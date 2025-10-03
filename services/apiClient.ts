@@ -39,10 +39,7 @@ export const generateAllImages = async (productDescription: string, baseImageFil
     const controller = createAbortControllerWithTimeout(API.TIMEOUT_MS);
 
     try {
-        // This fetch call is intended for a backend endpoint (e.g., a Vercel Function)
-        // at the path `/api/generateAll`. This will not work in the current environment
-        // but is structured for a real-world deployment.
-        const response = await fetch('/api/generateAll', {
+        const response = await fetch(API.ENDPOINTS.GENERATE_ALL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -76,8 +73,7 @@ export const regenerateImage = async (prompt: string, baseImageFile: File): Prom
     const controller = createAbortControllerWithTimeout(API.TIMEOUT_MS);
 
     try {
-        // This fetch call targets a backend endpoint at `/api/regenerateSingle`.
-        const response = await fetch('/api/regenerateSingle', {
+        const response = await fetch(API.ENDPOINTS.REGENERATE_SINGLE, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

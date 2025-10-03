@@ -20,6 +20,10 @@ export const FILE_UPLOAD = {
 export const API = {
   TIMEOUT_MS: 30000, // 30 seconds
   RETRY_ATTEMPTS: 3,
+  ENDPOINTS: {
+    GENERATE_ALL: '/api/generateAll',
+    REGENERATE_SINGLE: '/api/regenerateSingle',
+  },
 } as const;
 
 // Watermark Configuration

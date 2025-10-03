@@ -91,14 +91,14 @@ const InputForm: React.FC<InputFormProps> = ({
                     {isLoading ? (
                         <>
                             <Loader size="w-5 h-5" />
-                            <span>Generating...</span>
+                            <span>生成中...</span>
                         </>
                     ) : (
                         <>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
-                            <span>Generate Images</span>
+                            <span>画像を生成</span>
                         </>
                     )}
                 </button>

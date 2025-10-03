@@ -18,7 +18,7 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ message }) => (
                 </svg>
             </div>
             <div className="flex-1">
-                <h3 className="text-sm font-semibold text-red-800 mb-1">Error</h3>
+                <h3 className="text-sm font-semibold text-red-800 mb-1">エラー</h3>
                 <p className="text-sm text-red-700">{message}</p>
             </div>
         </div>
