@@ -1,5 +1,4 @@
 import { GoogleGenAI } from '@google/genai';
-import { ERROR_MESSAGES } from '../constants';
 
 /**
  * Validates and retrieves the Gemini API key from environment variables
@@ -9,7 +8,7 @@ import { ERROR_MESSAGES } from '../constants';
 export function getValidatedApiKey(): string {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-        throw new Error(ERROR_MESSAGES.API_KEY_MISSING);
+        throw new Error('GEMINI_API_KEY environment variable is required');
     }
     return apiKey;
 }
