@@ -34,6 +34,8 @@ const InputForm: React.FC<InputFormProps> = ({
                     onChange={(e) => onPromptTextChange(e.target.value)}
                     className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 resize-none bg-white/50 backdrop-blur-sm hover:border-gray-300"
                     placeholder="Paste your A+ content text here... (e.g., Premium organic cleaning wipes...)"
+                    aria-label="Product description text"
+                    aria-required="true"
                 />
             </div>
 
@@ -55,6 +57,8 @@ const InputForm: React.FC<InputFormProps> = ({
                         accept="image/*"
                         onChange={onImageFileChange}
                         className="w-full text-sm text-gray-700 file:mr-4 file:py-4 file:px-8 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-gradient-to-r file:from-indigo-600 file:to-purple-600 file:text-white hover:file:from-indigo-700 hover:file:to-purple-700 file:transition-all file:duration-200 file:cursor-pointer file:shadow-xl cursor-pointer border-2 border-dashed border-indigo-300 rounded-2xl p-6 hover:border-indigo-500 hover:bg-white/60 transition-all bg-white/40 backdrop-blur-sm"
+                        aria-label="Upload product image"
+                        aria-required="true"
                     />
                 </div>
             </div>
@@ -81,6 +85,8 @@ const InputForm: React.FC<InputFormProps> = ({
                     onClick={onSubmit}
                     disabled={isSubmitDisabled}
                     className="group relative px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 transition-all duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed shadow-lg hover:shadow-xl disabled:shadow-none flex items-center gap-3 transform hover:scale-105 active:scale-95 disabled:transform-none"
+                    aria-label="Generate A+ content images"
+                    aria-busy={isLoading}
                 >
                     {isLoading ? (
                         <>

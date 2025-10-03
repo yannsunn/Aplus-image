@@ -1,14 +1,10 @@
-import { GoogleGenAI, Modality } from '@google/genai';
+import { Modality } from '@google/genai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { MODELS } from '../constants';
+import { createGeminiClient, logError } from './utils';
 
-// Validate API key on module load
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-    throw new Error('GEMINI_API_KEY environment variable is required');
-}
-
-const ai = new GoogleGenAI({ apiKey });
+// Initialize Gemini client with validated API key
+const ai = createGeminiClient();
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') {
@@ -49,7 +45,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'サーバーで不明なエラーが発生しました。';
-        console.error('Regeneration handler error:', error);
+        logError('regenerateSingle.handler', error);
         return res.status(500).json({ message: errorMessage });
     }
 }

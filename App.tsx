@@ -201,7 +201,7 @@ const App: React.FC = () => {
                 />
 
                 {isLoading && (
-                    <div className="flex flex-col justify-center items-center my-8">
+                    <div className="flex flex-col justify-center items-center my-8" role="status" aria-live="polite">
                         <Loader />
                         <p className="text-gray-600 mt-4">画像を生成中です...</p>
                     </div>
