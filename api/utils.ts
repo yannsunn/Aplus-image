@@ -1,6 +1,14 @@
 import { GoogleGenAI } from '@google/genai';
 
 /**
+ * Gemini AI model names
+ */
+export const MODELS = {
+    TEXT: 'gemini-2.5-flash',
+    IMAGE: 'gemini-2.5-flash-image-preview',
+} as const;
+
+/**
  * Validates and retrieves the Gemini API key from environment variables
  * @throws Error if API key is missing
  * @returns Validated API key

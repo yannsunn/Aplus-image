@@ -1,7 +1,6 @@
 import { Modality } from '@google/genai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { MODELS } from '../constants';
-import { createGeminiClient, logError } from './utils';
+import { createGeminiClient, logError, MODELS } from './utils';
 
 // Initialize Gemini client with validated API key
 const ai = createGeminiClient();
