@@ -20,9 +20,12 @@ const createAbortControllerWithTimeout = (timeoutMs: number): AbortController =>
  */
 const handleApiError = (error: unknown): void => {
     if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error(`リクエストがタイムアウトしました（${API.TIMEOUT_MS / 1000}秒）`);
+        throw new Error(`リクエストがタイムアウトしました（${API.TIMEOUT_MS / 1000}秒）。再度お試しください。`);
     }
-    throw error;
+    if (error instanceof Error) {
+        throw error;
+    }
+    throw new Error('不明なエラーが発生しました。');
 };
 
 /**
@@ -51,8 +54,8 @@ export const generateAllImages = async (productDescription: string, baseImageFil
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred on the server.' }));
-            throw new Error(errorData.message || 'Failed to generate images.');
+            const errorData = await response.json().catch(() => ({ message: 'サーバーで不明なエラーが発生しました。' }));
+            throw new Error(errorData.message || '画像の生成に失敗しました。');
         }
 
         const data = await response.json();
@@ -86,8 +89,8 @@ export const regenerateImage = async (prompt: string, baseImageFile: File): Prom
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred on the server.' }));
-            throw new Error(errorData.message || 'Failed to regenerate the image.');
+            const errorData = await response.json().catch(() => ({ message: 'サーバーで不明なエラーが発生しました。' }));
+            throw new Error(errorData.message || '画像の再生成に失敗しました。');
         }
 
         const data = await response.json();

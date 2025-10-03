@@ -92,20 +92,37 @@ const App: React.FC = () => {
         try {
             // The apiClient now handles all backend communication.
             const newImages = await generateAllImages(promptText, baseImageFile);
-            
+
             // Add watermarks on the client-side after receiving the images.
-            const watermarkedImages = await Promise.all(
+            // Use Promise.allSettled to allow partial success
+            const watermarkResults = await Promise.allSettled(
                 newImages.map(async (image) => ({
                     ...image,
-                    src: await addWatermark(image.src), // Assuming API returns base64 string in src
+                    src: await addWatermark(image.src),
                 }))
             );
 
+            // Filter successful results and collect errors
+            const watermarkedImages = watermarkResults
+                .filter((result): result is PromiseFulfilledResult<GeneratedImage> => result.status === 'fulfilled')
+                .map(result => result.value);
+
+            const failedCount = watermarkResults.filter(r => r.status === 'rejected').length;
+
+            if (watermarkedImages.length === 0) {
+                throw new Error('すべての画像処理に失敗しました');
+            }
+
             setGeneratedImages(watermarkedImages);
+
+            // Show warning if some images failed
+            if (failedCount > 0) {
+                setError(`${watermarkedImages.length}枚の画像を生成しました（${failedCount}枚は失敗）`);
+            }
 
         } catch (err) {
             console.error(err);
-            const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+            const errorMessage = err instanceof Error ? err.message : '不明なエラーが発生しました';
             setError(`${ERROR_MESSAGES.GENERATION_FAILED}: ${errorMessage}`);
         } finally {
             setIsLoading(false);
@@ -118,45 +135,31 @@ const App: React.FC = () => {
             return;
         }
 
+        // Find the image to regenerate
+        const imageToRegen = generatedImages.find(img => img.id === index);
+        if (!imageToRegen) {
+            setError(ERROR_MESSAGES.MISSING_REGENERATION_DATA);
+            return;
+        }
+
         setIsRegenerating(index);
         setError(null);
 
         try {
-            // Get the image from state safely
-            setGeneratedImages(prev => {
-                const imageToRegen = prev.find(img => img.id === index);
-                if (!imageToRegen) {
-                    setError(ERROR_MESSAGES.MISSING_REGENERATION_DATA);
-                    setIsRegenerating(null);
-                    return prev;
-                }
+            const newImageBase64 = await regenerateImage(imageToRegen.prompt, baseImageFile);
+            const watermarkedSrc = await addWatermark(newImageBase64);
 
-                // Start regeneration asynchronously
-                (async () => {
-                    try {
-                        const newImageBase64 = await regenerateImage(imageToRegen.prompt, baseImageFile);
-                        const watermarkedSrc = await addWatermark(newImageBase64);
-                        setGeneratedImages(current =>
-                            current.map(img => img.id === index ? { ...img, src: watermarkedSrc } : img)
-                        );
-                    } catch (err) {
-                        console.error(err);
-                        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
-                        setError(`${ERROR_MESSAGES.REGENERATION_FAILED}: ${errorMessage}`);
-                    } finally {
-                        setIsRegenerating(null);
-                    }
-                })();
-
-                return prev;
-            });
+            setGeneratedImages(current =>
+                current.map(img => img.id === index ? { ...img, src: watermarkedSrc } : img)
+            );
         } catch (err) {
             console.error(err);
-            const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+            const errorMessage = err instanceof Error ? err.message : '不明なエラーが発生しました';
             setError(`${ERROR_MESSAGES.REGENERATION_FAILED}: ${errorMessage}`);
+        } finally {
             setIsRegenerating(null);
         }
-    }, [baseImageFile]);
+    }, [baseImageFile, generatedImages]);
     
     const handleDownloadAll = () => {
         generatedImages.forEach((image, index) => {

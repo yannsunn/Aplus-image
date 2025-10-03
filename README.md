@@ -49,8 +49,9 @@ Google Gemini APIを使用した、A+コンテンツ用の画像を自動生成�
 ## Build for Production
 
 ```bash
-npm run build
-npm run preview
+npm run type-check  # TypeScript型チェック
+npm run build       # 本番ビルド（型チェック含む）
+npm run preview     # ビルド結果のプレビュー
 ```
 
 ## Deploy to Vercel
@@ -64,10 +65,17 @@ npm run preview
 
 ⚠️ **IMPORTANT**: Never commit your `.env` file or API keys to version control!
 
-- The `.env` file is already in `.gitignore`
-- Use `.env.example` as a template for required environment variables
-- For production deployments, set environment variables in your hosting platform (e.g., Vercel)
-- The API key is validated on server startup to fail fast if missing
+- ✅ `.env` file is already in `.gitignore`
+- ✅ Use `.env.example` as a template for required environment variables
+- ✅ For production deployments, set environment variables in your hosting platform (e.g., Vercel)
+- ✅ API key is validated on server startup to fail fast if missing
+- ✅ File upload validation (10MB max, MIME type check)
+- ✅ API request timeout handling (30s)
+
+**本リポジトリは公開されています。以下の点に注意してください:**
+- `.env` ファイルを絶対にコミットしないでください
+- API keyやシークレット情報を含むファイルをGitHubにプッシュしないでください
+- Vercelの環境変数設定でAPIキーを管理してください
 
 ## Tech Stack
 
@@ -78,15 +86,18 @@ npm run preview
 ## Project Structure
 
 ```
-├── api/                    # Vercel Serverless Functions
-│   ├── generateAll.ts     # Generate all 4 images
-│   └── regenerateSingle.ts # Regenerate single image
+├── api/                    # Vercel Serverless Functions (JavaScript/CommonJS)
+│   ├── utils.js           # Shared API utilities & Gemini client
+│   ├── generateAll.js     # Generate all 4 images
+│   ├── regenerateSingle.js # Regenerate single image
+│   └── test.js            # API health check endpoint
 ├── services/              # API client services
 │   └── apiClient.ts       # Frontend API client
 ├── utils/                 # Utility functions
 │   ├── fileUtils.ts       # File conversion & watermark
 │   └── textProcessor.ts   # Amazon text extraction
 ├── constants.ts           # Application constants
+├── .env.example           # Environment variable template
 └── *.tsx                  # React components
 ```
 
