@@ -69,7 +69,7 @@ const InputForm: React.FC<InputFormProps> = ({
             {/* Text Input Section */}
             <div>
                 <label htmlFor="prompt-text" className="block text-sm font-semibold text-gray-700 mb-3">
-                    📝 Product Description
+                    📝 商品説明
                 </label>
                 <textarea
                     id="prompt-text"
@@ -77,8 +77,8 @@ const InputForm: React.FC<InputFormProps> = ({
                     value={promptText}
                     onChange={(e) => onPromptTextChange(e.target.value)}
                     className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 resize-none bg-white/50 backdrop-blur-sm hover:border-gray-300"
-                    placeholder="Paste your A+ content text here... (e.g., Premium organic cleaning wipes...)"
-                    aria-label="Product description text"
+                    placeholder="商品説明テキストをここに貼り付けてください（例：プレミアムオーガニッククリーニングワイプ...）"
+                    aria-label="商品説明テキスト"
                     aria-required="true"
                 />
             </div>

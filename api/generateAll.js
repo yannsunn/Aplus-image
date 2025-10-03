@@ -49,14 +49,14 @@ async function getPromptsFromText(text) {
         }
         const keywords = JSON.parse(response.text);
 
-        const baseInstruction = "入力画像を参照し、製品のデザイン、パッケージ、色を維持すること。商品の魅力を最大限に引き出すプロフェッショナルな商品写真を生成。画像内にティッシュや小道具などが写っている場合は無視し、商品のみに焦点を当てること。";
-        const commonStyle = "文字なし。高品質なコマーシャルフォト。適切なターゲット層に合わせた雰囲気。";
+        const baseInstruction = "Reference the input image and maintain the product's design, packaging, and colors. Generate a professional product photo that maximizes the product's appeal. If tissues or props appear in the image, ignore them and focus only on the product.";
+        const commonStyle = "No text. High-quality commercial photography. Atmosphere tailored to the appropriate target audience.";
 
         return [
-            { id: 0, title: 'モジュール1 (ヘッダー)', prompt: `${baseInstruction} テーマ: [${keywords.header}]. ${commonStyle} 製品を主役にしたクローズアップ。スタジオ照明で製品の魅力を強調。商品の主要な特徴や価値が視覚的に伝わる構図。` },
-            { id: 1, title: 'モジュール2 (特徴1)', prompt: `${baseInstruction} テーマ: [${keywords.feature1}]. ${commonStyle} 製品の使用シーンや特徴を表現。実際の使用場面やライフスタイルに溶け込む様子。品質や素材感が伝わる接写。` },
-            { id: 2, title: 'モジュール3 (特徴2)', prompt: `${baseInstruction} テーマ: [${keywords.feature2}]. ${commonStyle} 製品の用途や機能性を表現。様々な使用場面や活用シーンを分割画面またはコラージュ風に表現。多様性や利便性を強調。` },
-            { id: 3, title: 'モジュール4 (特徴3)', prompt: `${baseInstruction} テーマ: [${keywords.feature3}]. ${commonStyle} 製品パッケージのデザインや付加価値を強調。実際の販売環境やライフスタイルに配置されたイメージ。サイズ感や容量が伝わる構図。` },
+            { id: 0, title: 'モジュール1 (ヘッダー)', prompt: `${baseInstruction} Theme: [${keywords.header}]. ${commonStyle} Close-up shot with the product as the main focus. Studio lighting that highlights the product's appeal. Composition that visually conveys the product's key features and value.` },
+            { id: 1, title: 'モジュール2 (特徴1)', prompt: `${baseInstruction} Theme: [${keywords.feature1}]. ${commonStyle} Express the product's usage scenes and features. Show the product in actual use situations blending into lifestyle. Close-up shots that convey quality and material feel.` },
+            { id: 2, title: 'モジュール3 (特徴2)', prompt: `${baseInstruction} Theme: [${keywords.feature2}]. ${commonStyle} Express the product's purpose and functionality. Show various usage scenarios in split-screen or collage style. Emphasize diversity and convenience.` },
+            { id: 3, title: 'モジュール4 (特徴3)', prompt: `${baseInstruction} Theme: [${keywords.feature3}]. ${commonStyle} Emphasize the product packaging design and added value. Image of the product placed in actual retail environments or lifestyle settings. Composition that conveys size and capacity.` },
         ];
     } catch (error) {
         logError('getPromptsFromText', error);

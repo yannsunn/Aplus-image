@@ -183,10 +183,10 @@ const App: React.FC = () => {
                         </svg>
                     </div>
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 mb-4">
-                        A+ Content Generator
+                        A+ コンテンツ画像生成ツール
                     </h1>
                     <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-                        AI-powered image generation for your Amazon A+ content. Transform your product descriptions into stunning visuals.
+                        AI を活用して Amazon A+ コンテンツ用の画像を自動生成。商品説明から魅力的なビジュアルを作成します。
                     </p>
                 </header>
 
@@ -224,7 +224,7 @@ const App: React.FC = () => {
 
                 {/* Footer */}
                 <footer className="mt-12 text-center text-sm text-gray-500">
-                    <p>Powered by Google Gemini AI • Built with React & TypeScript</p>
+                    <p>Google Gemini AI を使用 • React & TypeScript で構築</p>
                 </footer>
             </div>
         </div>
